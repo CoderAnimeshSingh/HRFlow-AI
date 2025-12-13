@@ -75,9 +75,9 @@ npm run dev
 - **Time:** 2 minutes to create
 - **What to get:** Your Calendly URL
 
-### 4. Lovable Cloud (Optional, for Better AI)
-- **Website:** https://lovable.dev
-- **Cost:** Free tier available
+### 4. OpenAI (Optional, for Better AI)
+- **Website:** https://platform.openai.com/
+- **Cost:** Free tier may be available depending on promotions
 - **Time:** 2 minutes to create
 - **What to get:** API Key
 
@@ -132,7 +132,7 @@ npm run dev
 - Supabase database + auth
 - EmailJS integration
 - Calendly scheduling
-- Lovable AI analysis
+- OpenAI analysis (configurable AI provider)
 - GitHub Actions CI/CD
 
 ---
@@ -157,11 +157,11 @@ npm run dev
 - **Cost:** Depends on host
 - **Best for:** Self-hosted
 
-### Option 4: Lovable Cloud
-- **Steps:** 1 click
+### Option 4: OpenAI
+- **Steps:** Create account and API key
 - **Time:** 2 minutes
-- **Cost:** Included
-- **Best for:** Lovable users
+- **Cost:** Pay-as-you-go (per provider)
+- **Best for:** Projects using OpenAI for AI features
 
 ---
 

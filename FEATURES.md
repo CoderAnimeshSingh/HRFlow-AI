@@ -18,7 +18,7 @@
 - **Simple Interface**: User-friendly job application
 - **Resume Upload/Paste**: Multiple input methods
 - **Job Role Selection**: Dropdown with available positions
-- **AI Scoring**: Real-time resume analysis (Lovable AI)
+- **AI Scoring**: Real-time resume analysis (OpenAI-powered)
 - **Form Validation**: Client-side input validation
 - **Success Feedback**: Toast notifications after submission
 
@@ -188,10 +188,10 @@
 - **Re-analysis**: Update scoring anytime
 
 ### AI Engine
-- **Provider**: Lovable AI Gateway (uses Google Gemini 2.5 Flash)
-- **Speed**: ~5 seconds per resume
-- **Accuracy**: ~85-90% for skill detection
-- **Continuous Learning**: Improves over time
+- **Provider**: OpenAI (configurable AI provider)
+- **Speed**: ~5 seconds per resume (varies by model)
+- **Accuracy**: Varies by model and prompt engineering
+- **Continuous Learning**: Improve results by tuning prompts and validation
 
 ### How to Re-analyze
 1. Open candidate modal
@@ -302,7 +302,7 @@ new → screening → interview → test → offer → hired
 ### Backend
 - **Supabase**: PostgreSQL database + auth
 - **Edge Functions**: Serverless functions (Deno)
-- **Lovable AI**: AI analysis engine
+- **OpenAI**: AI analysis engine (configurable provider)
 
 ### Services
 - **EmailJS**: Email delivery

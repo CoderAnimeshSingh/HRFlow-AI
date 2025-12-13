@@ -50,7 +50,7 @@
 - [ ] `ai-resume-parser` deployed
 - [ ] `send-invite` deployed
 - [ ] Environment secrets set:
-  - [ ] `LOVABLE_API_KEY` (for resume analysis)
+  - [ ] `OPENAI_API_KEY` (for resume analysis)
   - [ ] `EMAILJS_USER_ID` (for email function)
   - [ ] `EMAILJS_SERVICE_ID` (for email function)
   - [ ] `EMAILJS_TEMPLATE_ID` (for email function)
@@ -262,11 +262,9 @@ If deploying to Vercel/Netlify:
 - [ ] Env vars passed to container
 - [ ] Server configured (nginx, Apache, etc.)
 
-### Option: Lovable Cloud
-- [ ] GitHub repo connected
-- [ ] Project created in Lovable dashboard
-- [ ] Published successfully
-- [ ] Custom domain configured
+### AI Provider (OpenAI)
+- [ ] OpenAI account created
+- [ ] API key generated and saved as `OPENAI_API_KEY` in function secrets
 
 ---
 

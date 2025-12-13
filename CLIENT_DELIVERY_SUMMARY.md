@@ -40,7 +40,7 @@
 ✅ Email/password authentication
 ✅ Admin dashboard with analytics
 ✅ Candidate pipeline management
-✅ AI resume analysis (Lovable Gemini 2.5 Flash)
+✅ AI resume analysis (OpenAI-powered)
 ✅ Email notifications (EmailJS + Supabase)
 ✅ Interview scheduling (Calendly integration)
 ✅ Candidate comparison (up to 3 side-by-side)
@@ -65,7 +65,7 @@
 ✅ Supabase (Database + Authentication + Edge Functions)
 ✅ EmailJS (Email notifications - client & server modes)
 ✅ Calendly (Interview scheduling integration)
-✅ Lovable AI (AI resume analysis)
+✅ OpenAI-powered AI resume analysis
 ✅ GitHub (Source control + CI pipeline)
 ```
 
@@ -91,7 +91,7 @@
 1. **Supabase:** Create account and database
 2. **EmailJS:** Create email service and template
 3. **Calendly:** Create scheduling event
-4. **Lovable:** Get API key (optional, for improved AI)
+4. **OpenAI:** Get API key (optional, for improved AI)
 
 ### Step 3: Configure Application (10 min)
 1. **Copy `.env.example` to `.env`**
@@ -146,7 +146,7 @@ Follow `DEPLOYMENT_CHECKLIST.md` for your platform:
 ### Backend
 - Supabase (PostgreSQL + Auth)
 - Edge Functions (Deno)
-- Lovable AI (Resume analysis)
+- OpenAI (Resume analysis)
 
 ### Services
 - EmailJS (Email delivery)
@@ -221,11 +221,11 @@ Lighthouse Score:    >80 (all categories)
 - **Best for:** Self-hosted / Enterprise
 - **Steps:** Build image → Deploy to server
 
-### Option 4: Lovable Cloud
-- **Cost:** Included with Lovable
-- **Setup Time:** <2 minutes
-- **Best for:** Lovable users
-- **Steps:** Connect GitHub → Click Publish
+### Option 4: OpenAI
+- **Cost:** Pay-as-you-go (OpenAI)
+- **Setup Time:** <2 minutes (account + API key)
+- **Best for:** Projects using OpenAI for AI features
+- **Steps:** Create API key → Add to function secrets
 
 **See DEPLOYMENT_CHECKLIST.md for detailed instructions.**
 

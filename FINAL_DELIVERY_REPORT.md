@@ -26,7 +26,7 @@
 - **Zero Build Errors:** Linting passed for new code
 
 ### 2. AI-Powered Features ✅
-- **Resume Parsing:** Lovable AI analyzes resumes
+-- **Resume Parsing:** OpenAI-powered resume analysis (configurable AI provider)
 - **Fit Scoring:** 0-100 scale with color coding
 - **Skill Extraction:** Automatic skill identification
 - **Interview Questions:** AI suggests relevant questions
@@ -57,7 +57,7 @@
 ### 6. DevOps & Deployment ✅
 - **GitHub Actions CI:** Automated build & lint pipeline
 - **Production Build:** Optimized and verified
-- **Multiple Deployment Options:** Vercel, Netlify, Docker, Lovable Cloud
+-- **Multiple Deployment Options:** Vercel, Netlify, Docker (AI provider is configured separately, e.g., OpenAI)
 - **Environment Configuration:** Template + instructions
 - **Security Hardened:** No exposed secrets
 
@@ -165,7 +165,7 @@ All commits are on **main branch** and **pushed to GitHub** ✅
 - ✅ Supabase (database + auth)
 - ✅ EmailJS (email sending)
 - ✅ Calendly (scheduling)
-- ✅ Lovable AI (AI analysis)
+- ✅ OpenAI-powered AI analysis
 - ✅ GitHub (CI/CD)
 
 ---

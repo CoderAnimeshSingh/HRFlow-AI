@@ -9,7 +9,7 @@
 - Supabase account (free tier works)
 - EmailJS account (free tier works)
 - Calendly account (free tier works)
-- Optional: Lovable Cloud account for AI backend
+- Optional: OpenAI account (for AI backend)
 
 ## 🚀 Installation & Local Development
 
@@ -112,14 +112,14 @@ CREATE POLICY "auth_update" ON candidates
 ```
 
 3. **Deploy Edge Functions**:
-   - `ai-resume-parser`: Resume analysis (uses Lovable AI Gateway)
-   - `send-invite`: Server-side email sending
+  - `ai-resume-parser`: Resume analysis (uses OpenAI)
+  - `send-invite`: Server-side email sending
 
 4. **Set Environment Secrets** (for Edge Functions):
-   - `LOVABLE_API_KEY`: Your Lovable API key (for AI analysis)
-   - `EMAILJS_USER_ID`: From EmailJS
-   - `EMAILJS_SERVICE_ID`: From EmailJS
-   - `EMAILJS_TEMPLATE_ID`: From EmailJS
+  - `OPENAI_API_KEY`: Your OpenAI API key (for AI analysis)
+  - `EMAILJS_USER_ID`: From EmailJS
+  - `EMAILJS_SERVICE_ID`: From EmailJS
+  - `EMAILJS_TEMPLATE_ID`: From EmailJS
 
 ### EmailJS Setup
 
@@ -208,13 +208,9 @@ docker build -t hrflow-ai .
 docker run -p 3000:3000 hrflow-ai
 ```
 
-### Option 4: Lovable Cloud (Native)
+### AI Provider
 
-1. Push to GitHub
-2. Visit https://lovable.dev
-3. Create project from GitHub repo
-4. Click **Share → Publish**
-5. Configure custom domain
+If you are using OpenAI, create an API key at https://platform.openai.com/ and add it to your Supabase function secrets as `OPENAI_API_KEY`.
 
 ---
 

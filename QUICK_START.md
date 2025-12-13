@@ -183,7 +183,7 @@ npm install
 - ✅ Modern React 18 + TypeScript
 - ✅ Tailwind CSS + shadcn/ui components
 - ✅ Supabase backend + auth
-- ✅ AI resume analysis (Lovable)
+- ✅ AI resume analysis (OpenAI-powered)
 - ✅ Email notifications (EmailJS)
 - ✅ Interview scheduling (Calendly)
 - ✅ Candidate comparison

@@ -90,7 +90,7 @@
 **Location:** `supabase/functions/`
 
 #### AI Resume Parser
-- ✅ `ai-resume-parser/index.ts` - AI resume analysis (Lovable Gemini 2.5 Flash)
+- ✅ `ai-resume-parser/index.ts` - AI resume analysis (OpenAI-powered)
   - Extracts skills
   - Calculates fit score (0-100)
   - Estimates experience
@@ -322,11 +322,10 @@
 ## 🚀 Deployment Ready
 
 ### Multiple Deployment Options
-- ✅ Vercel (recommended)
-- ✅ Netlify
-- ✅ Docker containerization
-- ✅ Lovable Cloud
-- ✅ Self-hosted
+- - ✅ Vercel (recommended)
+- - ✅ Netlify
+- - ✅ Docker containerization
+- - ✅ Self-hosted
 
 ### Build & Deployment
 - ✅ Production build script

@@ -36,11 +36,7 @@ A modern, AI-powered hiring and candidate management platform that automates res
 
 ### Technical Highlights
 
-- **Modern React Architecture** - Built with React 18, TypeScript, and Vite
-- **Responsive Design** - Fully mobile-optimized interface
-- **Beautiful UI** - Custom design system with Tailwind CSS and shadcn/ui
-- **Smooth Animations** - Framer Motion for polished interactions
-- **Cloud Backend** - Serverless architecture with Supabase + Lovable Cloud
+**Cloud Backend** - Serverless architecture with Supabase + OpenAI (for AI features)
 
 ## 📋 Documentation
 
@@ -237,11 +233,9 @@ Analyzes candidate resumes using AI.
 
 ## 🚀 Deployment
 
-### Deploy with Lovable
+### AI Provider (OpenAI)
 
-1. Visit [Lovable](https://lovable.dev)
-2. Open your project
-3. Click **Share → Publish**
+This project uses an external AI provider for resume analysis. To use OpenAI, create an API key at https://platform.openai.com/ and add it to your Supabase function secrets as `OPENAI_API_KEY`.
 
 ### Custom Domain
 
@@ -257,7 +251,7 @@ The following variables are auto-configured:
 - `VITE_SUPABASE_PROJECT_ID`
 
 Backend secrets (auto-provisioned):
-- `LOVABLE_API_KEY` - AI gateway authentication
+- `OPENAI_API_KEY` - OpenAI API key for AI analysis
 
 ## 🧪 Development
 
@@ -289,7 +283,7 @@ npm run lint
 | Framer Motion | Animations |
 | React Router | Routing |
 | TanStack Query | Data Fetching |
-| Lovable Cloud | Backend |
+| OpenAI | Backend |
 
 ## 📄 License
 
@@ -301,7 +295,7 @@ For support, please contact the development team or open an issue in the reposit
 
 ---
 
-Built with ❤️ using [Lovable](https://lovable.dev)
+Built with ❤️
 
 ## ✅ Local Integrations Added
 

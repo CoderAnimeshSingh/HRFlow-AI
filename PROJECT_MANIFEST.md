@@ -168,7 +168,7 @@ Zod 3.25.76 - Schema validation
 Supabase - Database + Auth + Edge Functions
 PostgreSQL - Primary database
 Deno - Edge Function runtime
-Lovable AI Gateway - AI analysis (Gemini 2.5 Flash)
+OpenAI (or configurable AI provider) - AI analysis
 EmailJS - Email delivery
 Calendly - Interview scheduling
 ```
@@ -252,7 +252,7 @@ shadcn/ui - 30+ pre-built components
 - **Dashboard:** <3s
 - **Candidate Modal:** <1s
 - **Email Send:** <2s
-- **AI Analysis:** ~5s (Lovable)
+- **AI Analysis:** ~5s (OpenAI, varies by model)
 
 ### Bundle Size
 - **Main JS:** 765 KB (gzipped: 229 KB)
@@ -315,8 +315,8 @@ shadcn/ui - 30+ pre-built components
 - **Performance:** Good
 - **Flexibility:** High
 
-### Native: Lovable Cloud
-- **Cost:** Included with Lovable
+### Native: OpenAI (or configurable AI provider)
+-- **Cost:** Pay-as-you-go depending on provider
 - **Setup Time:** <2 minutes
 - **Performance:** Excellent
 - **Integration:** Deep (AI)
@@ -401,7 +401,7 @@ shadcn/ui - 30+ pre-built components
 ### Services Configured
 - ✅ Email notifications (EmailJS)
 - ✅ Interview scheduling (Calendly)
-- ✅ AI resume analysis (Lovable)
+- ✅ AI resume analysis (OpenAI-powered)
 - ✅ Database + auth (Supabase)
 - ✅ CI/CD pipeline (GitHub Actions)
 
@@ -473,7 +473,7 @@ This application is **100% production-ready** and includes:
    - Create Supabase project
    - Configure EmailJS
    - Set up Calendly
-   - Add Lovable API key
+   - Add OpenAI API key (as `OPENAI_API_KEY`)
 
 4. **Test Features**
    - Apply as candidate
