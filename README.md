@@ -8,47 +8,41 @@
 
 A modern, AI-powered hiring and candidate management platform that automates resume screening, candidate tracking, and the entire recruitment pipeline.
 
-> **⚡ NEW in v1.0.0:** Candidate comparison, email notifications, interview scheduling, and CI/CD pipeline!
+## 🚀 Live Demo
 
-## 🚀 Quick Start
-
-**New to this project?** Start here:
-1. **[CLIENT_DELIVERY_SUMMARY.md](./CLIENT_DELIVERY_SUMMARY.md)** - What you're getting (5 min read)
-2. **[QUICK_START.md](./QUICK_START.md)** - Get running in 5 minutes
-3. **[SETUP_GUIDE.md](./SETUP_GUIDE.md)** - Complete installation guide
+Visit the live application to see HRFlow AI in action.
 
 ## ✨ Features
 
 ### Core Functionality
 
-- **🤖 AI-Powered Resume Screening** - Automatically analyze and score candidates using advanced AI
+- **🤖 AI-Powered Resume Screening** - Automatically analyze and score candidates using Google Gemini AI
 - **📝 Candidate Intake Form** - Beautiful, responsive application form for job seekers
 - **📊 Dashboard & Analytics** - Real-time candidate pipeline management with statistics
-- **🔐 Secure Authentication** - Full login/signup system with role-based access
+- **🔐 Secure Authentication** - Full login/signup system with role-based access control
 - **⚡ Real-time Updates** - Live candidate data sync across all sessions
 
-### New in v1.0.0
+### Advanced Features
 
-- **💌 Email Notifications** - Send interview invites via EmailJS (client + server modes)
-- **📅 Interview Scheduling** - Calendly integration for quick scheduling
-- **🔄 Candidate Comparison** - Compare up to 3 candidates side-by-side
-- **🚀 CI/CD Pipeline** - GitHub Actions for automated testing and deployment
+- **💌 Email Notifications** - Send interview invites directly from the dashboard
+- **📅 Interview Scheduling** - Calendly integration for seamless scheduling
+- **🔄 Candidate Comparison** - Compare up to 3 candidates side-by-side with AI recommendations
+- **📱 Mobile Responsive** - Fully optimized for all device sizes
 
 ### Technical Highlights
 
-**Cloud Backend** - Serverless architecture with Supabase + OpenAI (for AI features)
+- **Serverless Architecture** - Powered by edge functions for scalability
+- **Row-Level Security** - Enterprise-grade data protection
+- **Real-time Database** - Instant updates across all connected clients
 
 ## 📋 Documentation
 
 | Document | Purpose |
 |----------|---------|
-| **[QUICK_START.md](./QUICK_START.md)** | Get running in 5 minutes |
-| **[SETUP_GUIDE.md](./SETUP_GUIDE.md)** | Complete setup & configuration |
-| **[FEATURES.md](./FEATURES.md)** | Feature documentation |
-| **[DEPLOYMENT_CHECKLIST.md](./DEPLOYMENT_CHECKLIST.md)** | Pre-deployment verification |
-| **[PROJECT_MANIFEST.md](./PROJECT_MANIFEST.md)** | Project overview |
-| **[DELIVERABLES_INDEX.md](./DELIVERABLES_INDEX.md)** | Complete inventory |
-| **[FINAL_DELIVERY_REPORT.md](./FINAL_DELIVERY_REPORT.md)** | Delivery summary |
+| [QUICK_START.md](./QUICK_START.md) | Get running in 5 minutes |
+| [SETUP_GUIDE.md](./SETUP_GUIDE.md) | Complete setup & configuration |
+| [FEATURES.md](./FEATURES.md) | Feature documentation |
+| [DEPLOYMENT_CHECKLIST.md](./DEPLOYMENT_CHECKLIST.md) | Pre-deployment verification |
 
 ## 🛠️ Getting Started
 
@@ -61,8 +55,14 @@ A modern, AI-powered hiring and candidate management platform that automates res
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/CoderAnimeshSingh/HRFlow-AI.git
-   cd HRFlow-AI
+   git clone https://github.com/your-username/hrflow-ai.git
+   cd hrflow-ai
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
 
 3. **Start the development server**
    ```bash
@@ -83,8 +83,9 @@ hrflow-ai/
 │   │   │   ├── DashboardHeader.tsx
 │   │   │   ├── DashboardStats.tsx
 │   │   │   ├── CandidateTable.tsx
-│   │   │   └── CandidateModal.tsx
-│   │   ├── ui/              # shadcn/ui components
+│   │   │   ├── CandidateModal.tsx
+│   │   │   └── CandidateCompare.tsx
+│   │   ├── ui/              # UI component library
 │   │   ├── CTA.tsx
 │   │   ├── Features.tsx
 │   │   ├── Footer.tsx
@@ -94,8 +95,7 @@ hrflow-ai/
 │   │   ├── Process.tsx
 │   │   └── Stats.tsx
 │   ├── hooks/               # Custom React hooks
-│   ├── integrations/        # Third-party integrations
-│   │   └── supabase/        # Supabase client & types
+│   ├── integrations/        # Backend integrations
 │   ├── lib/                 # Utility functions
 │   ├── pages/               # Route pages
 │   │   ├── Index.tsx        # Landing page
@@ -108,8 +108,9 @@ hrflow-ai/
 │   └── index.css            # Global styles & design tokens
 ├── supabase/
 │   ├── functions/           # Edge functions
-│   │   └── ai-resume-parser/# AI resume analysis function
-│   └── config.toml          # Supabase configuration
+│   │   ├── ai-resume-parser/# AI resume analysis
+│   │   └── send-invite/     # Email notification service
+│   └── config.toml          # Backend configuration
 ├── tailwind.config.ts       # Tailwind CSS configuration
 ├── vite.config.ts           # Vite build configuration
 └── package.json             # Project dependencies
@@ -117,7 +118,7 @@ hrflow-ai/
 
 ## ✨ Features Overview
 
-### 1. Landing Page
+### 1. Landing Page (`/`)
 - Professional, conversion-optimized design
 - Animated hero section with value proposition
 - Features grid showcasing platform capabilities
@@ -125,36 +126,46 @@ hrflow-ai/
 - Pricing tiers
 - Email capture CTA
 
-### 2. Authentication System
+### 2. Authentication System (`/auth`)
 - Secure email/password authentication
-- Auto-confirm email signups (configurable)
+- Auto-confirm email signups
 - Protected dashboard routes
 - Session persistence
 
 ### 3. Candidate Application Form (`/apply`)
 - Clean, user-friendly interface
-- Job role selection
-- Resume content paste & AI analysis
+- Job role selection (15+ positions)
+- Resume content paste & instant AI analysis
 - Real-time submission feedback
+- Mobile-optimized design
 
 ### 4. Admin Dashboard (`/dashboard`)
 - **Statistics Cards**: Total candidates, new applications, in-progress, average AI score
-- **Candidate Table**: Sortable, filterable candidate list
-- **Status Management**: Track candidates through the pipeline
+- **Candidate Table**: 
+  - Search & filter functionality
+  - Status management dropdown
+  - Bulk selection for comparison
+  - Real-time updates
 - **Candidate Modal**: 
-  - AI analysis results
-  - Resume viewer
-  - Interview scheduling
+  - AI analysis results with strengths & concerns
+  - Full resume viewer
+  - Interview scheduling with Calendly
   - Test link management
-  - Notes
+  - Notes & status updates
+  - Email notification sending
+- **Candidate Comparison**:
+  - Side-by-side comparison of up to 3 candidates
+  - AI recommendation for best fit
+  - Skills, experience, and score comparison
 
 ### 5. AI Resume Screening
 - Powered by Google Gemini 2.5 Flash
 - Automatic skill extraction
 - Experience estimation
-- Fit score calculation (0-100)
+- Fit score calculation (0-100%)
 - Strengths & concerns analysis
 - Recommended interview questions
+- Re-analyze capability
 
 ## 🔌 API Documentation
 
@@ -187,6 +198,22 @@ Analyzes candidate resumes using AI.
     "concerns": ["No TypeScript experience"],
     "recommendedQuestions": ["Describe your experience with..."]
   }
+}
+```
+
+#### `send-invite`
+Sends interview invitation emails.
+
+**Endpoint:** `POST /functions/v1/send-invite`
+
+**Request Body:**
+```json
+{
+  "candidateName": "John Doe",
+  "candidateEmail": "john@example.com",
+  "interviewDate": "2024-01-15T10:00:00Z",
+  "notes": "Optional notes",
+  "companyName": "Your Company"
 }
 ```
 
@@ -233,25 +260,25 @@ Analyzes candidate resumes using AI.
 
 ## 🚀 Deployment
 
-### AI Provider (OpenAI)
+### Production Deployment
 
-This project uses an external AI provider for resume analysis. To use OpenAI, create an API key at https://platform.openai.com/ and add it to your Supabase function secrets as `OPENAI_API_KEY`.
+1. Build the application:
+   ```bash
+   npm run build
+   ```
+
+2. Deploy the `dist` folder to your hosting provider
 
 ### Custom Domain
 
-1. Navigate to **Project → Settings → Domains**
-2. Click **Connect Domain**
-3. Follow DNS configuration instructions
+Configure your custom domain through your hosting provider's settings.
 
 ### Environment Variables
 
-The following variables are auto-configured:
-- `VITE_SUPABASE_URL`
-- `VITE_SUPABASE_PUBLISHABLE_KEY`
-- `VITE_SUPABASE_PROJECT_ID`
-
-Backend secrets (auto-provisioned):
-- `OPENAI_API_KEY` - OpenAI API key for AI analysis
+Required environment variables (auto-configured in production):
+- `VITE_SUPABASE_URL` - Database URL
+- `VITE_SUPABASE_PUBLISHABLE_KEY` - Public API key
+- `VITE_SUPABASE_PROJECT_ID` - Project identifier
 
 ## 🧪 Development
 
@@ -283,7 +310,23 @@ npm run lint
 | Framer Motion | Animations |
 | React Router | Routing |
 | TanStack Query | Data Fetching |
-| OpenAI | Backend |
+| Google Gemini | AI Analysis |
+
+## 📱 Mobile Responsiveness
+
+HRFlow AI is fully responsive and optimized for:
+- 📱 Mobile phones (320px+)
+- 📱 Tablets (768px+)
+- 💻 Laptops (1024px+)
+- 🖥️ Desktops (1280px+)
+
+## 🔒 Security Features
+
+- **Row-Level Security (RLS)** - Database-level access control
+- **Role-Based Access Control** - Admin, moderator, and user roles
+- **Secure Authentication** - Industry-standard auth implementation
+- **Input Validation** - All user inputs are validated
+- **CORS Protection** - Cross-origin request protection
 
 ## 📄 License
 
@@ -291,16 +334,8 @@ This project is proprietary software. All rights reserved.
 
 ## 🤝 Support
 
-For support, please contact the development team or open an issue in the repository.
+For support, please contact the development team.
 
 ---
 
-Built with ❤️
-
-## ✅ Local Integrations Added
-
-- **Email Notifications (EmailJS)**: Client-side email sending has been added for interview invites using `@emailjs/browser`. Configure `VITE_EMAILJS_SERVICE_ID`, `VITE_EMAILJS_TEMPLATE_ID`, and `VITE_EMAILJS_PUBLIC_KEY` in your `.env`.
-- **Interview Scheduling (Calendly)**: Quick scheduling button opens a Calendly event (configure `VITE_CALENDLY_BASE_URL`).
-- **Candidate Comparison**: Side-by-side candidate comparison modal (select up to 3 candidates in the table and click Compare).
-
-See `src/components/dashboard/CandidateCompare.tsx`, `src/lib/email.ts`, and changes in `src/components/dashboard/CandidateTable.tsx` and `src/components/dashboard/CandidateModal.tsx`.
+Built with ❤️ by the HRFlow AI Team

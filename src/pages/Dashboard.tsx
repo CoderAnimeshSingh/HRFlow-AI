@@ -42,6 +42,25 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
+  const fetchCandidates = useCallback(async () => {
+    const { data, error } = await supabase
+      .from('candidates')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('Error fetching candidates:', error);
+      toast({
+        title: "Error",
+        description: "Failed to fetch candidates",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setCandidates(data || []);
+  }, [toast]);
+
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
@@ -84,25 +103,6 @@ const Dashboard = () => {
       };
     }
   }, [user, fetchCandidates]);
-
-  const fetchCandidates = useCallback(async () => {
-    const { data, error } = await supabase
-      .from('candidates')
-      .select('*')
-      .order('created_at', { ascending: false });
-
-    if (error) {
-      console.error('Error fetching candidates:', error);
-      toast({
-        title: "Error",
-        description: "Failed to fetch candidates",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    setCandidates(data || []);
-  }, [toast]);
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
