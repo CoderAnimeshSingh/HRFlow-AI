@@ -4,10 +4,20 @@
 ![React](https://img.shields.io/badge/React-18.3.1-61DAFB?style=for-the-badge&logo=react)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.0-3178C6?style=for-the-badge&logo=typescript)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.4-06B6D4?style=for-the-badge&logo=tailwindcss)
+![Status](https://img.shields.io/badge/Status-Production%20Ready-brightgreen?style=for-the-badge)
 
 A modern, AI-powered hiring and candidate management platform that automates resume screening, candidate tracking, and the entire recruitment pipeline.
 
-## 🚀 Features
+> **⚡ NEW in v1.0.0:** Candidate comparison, email notifications, interview scheduling, and CI/CD pipeline!
+
+## 🚀 Quick Start
+
+**New to this project?** Start here:
+1. **[CLIENT_DELIVERY_SUMMARY.md](./CLIENT_DELIVERY_SUMMARY.md)** - What you're getting (5 min read)
+2. **[QUICK_START.md](./QUICK_START.md)** - Get running in 5 minutes
+3. **[SETUP_GUIDE.md](./SETUP_GUIDE.md)** - Complete installation guide
+
+## ✨ Features
 
 ### Core Functionality
 
@@ -17,23 +27,32 @@ A modern, AI-powered hiring and candidate management platform that automates res
 - **🔐 Secure Authentication** - Full login/signup system with role-based access
 - **⚡ Real-time Updates** - Live candidate data sync across all sessions
 
+### New in v1.0.0
+
+- **💌 Email Notifications** - Send interview invites via EmailJS (client + server modes)
+- **📅 Interview Scheduling** - Calendly integration for quick scheduling
+- **🔄 Candidate Comparison** - Compare up to 3 candidates side-by-side
+- **🚀 CI/CD Pipeline** - GitHub Actions for automated testing and deployment
+
 ### Technical Highlights
 
 - **Modern React Architecture** - Built with React 18, TypeScript, and Vite
 - **Responsive Design** - Fully mobile-optimized interface
 - **Beautiful UI** - Custom design system with Tailwind CSS and shadcn/ui
 - **Smooth Animations** - Framer Motion for polished interactions
-- **Cloud Backend** - Serverless architecture with Lovable Cloud
+- **Cloud Backend** - Serverless architecture with Supabase + Lovable Cloud
 
-## 📋 Table of Contents
+## 📋 Documentation
 
-- [Getting Started](#getting-started)
-- [Project Structure](#project-structure)
-- [Features Overview](#features-overview)
-- [API Documentation](#api-documentation)
-- [Database Schema](#database-schema)
-- [Deployment](#deployment)
-- [Contributing](#contributing)
+| Document | Purpose |
+|----------|---------|
+| **[QUICK_START.md](./QUICK_START.md)** | Get running in 5 minutes |
+| **[SETUP_GUIDE.md](./SETUP_GUIDE.md)** | Complete setup & configuration |
+| **[FEATURES.md](./FEATURES.md)** | Feature documentation |
+| **[DEPLOYMENT_CHECKLIST.md](./DEPLOYMENT_CHECKLIST.md)** | Pre-deployment verification |
+| **[PROJECT_MANIFEST.md](./PROJECT_MANIFEST.md)** | Project overview |
+| **[DELIVERABLES_INDEX.md](./DELIVERABLES_INDEX.md)** | Complete inventory |
+| **[FINAL_DELIVERY_REPORT.md](./FINAL_DELIVERY_REPORT.md)** | Delivery summary |
 
 ## 🛠️ Getting Started
 
@@ -46,14 +65,8 @@ A modern, AI-powered hiring and candidate management platform that automates res
 
 1. **Clone the repository**
    ```bash
-   git clone <YOUR_GIT_URL>
-   cd hrflow-ai
-   ```
-
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
+   git clone https://github.com/CoderAnimeshSingh/HRFlow-AI.git
+   cd HRFlow-AI
 
 3. **Start the development server**
    ```bash
