@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { User } from "@supabase/supabase-js";
@@ -7,6 +7,7 @@ import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 import { DashboardStats } from "@/components/dashboard/DashboardStats";
 import { CandidateTable } from "@/components/dashboard/CandidateTable";
 import { CandidateModal } from "@/components/dashboard/CandidateModal";
+import CandidateCompare from "@/components/dashboard/CandidateCompare";
 import { Loader2 } from "lucide-react";
 
 export interface Candidate {
@@ -36,6 +37,8 @@ const Dashboard = () => {
   const [candidates, setCandidates] = useState<Candidate[]>([]);
   const [selectedCandidate, setSelectedCandidate] = useState<Candidate | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isCompareOpen, setIsCompareOpen] = useState(false);
+  const [compareCandidates, setCompareCandidates] = useState<Candidate[]>([]);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -80,9 +83,9 @@ const Dashboard = () => {
         supabase.removeChannel(channel);
       };
     }
-  }, [user]);
+  }, [user, fetchCandidates]);
 
-  const fetchCandidates = async () => {
+  const fetchCandidates = useCallback(async () => {
     const { data, error } = await supabase
       .from('candidates')
       .select('*')
@@ -99,7 +102,7 @@ const Dashboard = () => {
     }
 
     setCandidates(data || []);
-  };
+  }, [toast]);
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -153,6 +156,10 @@ const Dashboard = () => {
             onViewCandidate={handleViewCandidate}
             onStatusChange={handleStatusChange}
             onRefresh={fetchCandidates}
+            onCompare={(list) => {
+              setCompareCandidates(list);
+              setIsCompareOpen(true);
+            }}
           />
         </div>
       </main>
@@ -166,6 +173,12 @@ const Dashboard = () => {
         }}
         onStatusChange={handleStatusChange}
         onRefresh={fetchCandidates}
+      />
+
+      <CandidateCompare
+        isOpen={isCompareOpen}
+        onClose={() => setIsCompareOpen(false)}
+        candidates={compareCandidates}
       />
     </div>
   );

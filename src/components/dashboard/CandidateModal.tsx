@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { sendInterviewEmail } from "@/lib/email";
 import { 
   User, 
   Mail, 
@@ -56,6 +57,7 @@ export const CandidateModal = ({
   const [testScore, setTestScore] = useState<string>(candidate?.test_score?.toString() || "");
   const [saving, setSaving] = useState(false);
   const [reanalyzing, setReanalyzing] = useState(false);
+  const [sendingEmail, setSendingEmail] = useState(false);
   const { toast } = useToast();
 
   if (!candidate) return null;
@@ -333,14 +335,89 @@ export const CandidateModal = ({
                 />
               </div>
 
-              <Button onClick={handleSave} disabled={saving} className="w-full">
+              <div className="grid gap-2 sm:grid-cols-2">
+                <Button onClick={handleSave} disabled={saving} className="w-full">
                 {saving ? (
                   <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                 ) : (
                   <Save className="h-4 w-4 mr-2" />
                 )}
                 Save Changes
-              </Button>
+
+                </Button>
+
+                <Button
+                  onClick={async () => {
+                    if (!candidate) return;
+                    setSendingEmail(true);
+                    try {
+                      const useServer = import.meta.env.VITE_USE_SERVER_EMAIL === 'true';
+                      if (useServer) {
+                        // Call Supabase Edge Function `send-invite`
+                        const { data, error } = await supabase.functions.invoke('send-invite', {
+                          body: {
+                            candidateName: candidate.name,
+                            candidateEmail: candidate.email,
+                            interviewDate,
+                            notes,
+                            companyName: import.meta.env.VITE_COMPANY_NAME || '',
+                          },
+                        });
+
+                        if (error) throw error;
+                        if (data && 'error' in data && data.error) throw new Error(String(data.error));
+
+                        toast({ title: 'Email Sent', description: 'Interview invite sent via server.' });
+                      } else {
+                        const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID as string;
+                        const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID as string;
+                        const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY as string;
+
+                        const templateParams = {
+                          to_name: candidate.name,
+                          to_email: candidate.email,
+                          interview_datetime: interviewDate || "",
+                          company_name: import.meta.env.VITE_COMPANY_NAME || "",
+                          notes,
+                        };
+
+                        await sendInterviewEmail({ serviceId, templateId, publicKey, templateParams });
+                        toast({ title: 'Email Sent', description: 'Interview invite sent to candidate.' });
+                      }
+                    } catch (err) {
+                      console.error(err);
+                      toast({ title: "Email Failed", description: "Failed to send email.", variant: "destructive" });
+                    } finally {
+                      setSendingEmail(false);
+                    }
+                  }}
+                  disabled={sendingEmail}
+                >
+                  {sendingEmail ? (
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  ) : (
+                    <Mail className="h-4 w-4 mr-2" />
+                  )}
+                  Send Invite
+                </Button>
+              </div>
+
+              <div className="mt-2 flex gap-2">
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    // Open Calendly scheduling page; user should configure VITE_CALENDLY_BASE_URL in .env
+                    const base = import.meta.env.VITE_CALENDLY_BASE_URL as string;
+                    const url = base
+                      ? `${base}?name=${encodeURIComponent(candidate.name)}&email=${encodeURIComponent(candidate.email)}`
+                      : `https://calendly.com/your-calendly-event?name=${encodeURIComponent(candidate.name)}&email=${encodeURIComponent(candidate.email)}`;
+                    window.open(url, "_blank");
+                  }}
+                >
+                  <Calendar className="h-4 w-4 mr-2" />
+                  Schedule (Calendly)
+                </Button>
+              </div>
             </TabsContent>
           </Tabs>
         </div>

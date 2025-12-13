@@ -289,3 +289,11 @@ For support, please contact the development team or open an issue in the reposit
 ---
 
 Built with ❤️ using [Lovable](https://lovable.dev)
+
+## ✅ Local Integrations Added
+
+- **Email Notifications (EmailJS)**: Client-side email sending has been added for interview invites using `@emailjs/browser`. Configure `VITE_EMAILJS_SERVICE_ID`, `VITE_EMAILJS_TEMPLATE_ID`, and `VITE_EMAILJS_PUBLIC_KEY` in your `.env`.
+- **Interview Scheduling (Calendly)**: Quick scheduling button opens a Calendly event (configure `VITE_CALENDLY_BASE_URL`).
+- **Candidate Comparison**: Side-by-side candidate comparison modal (select up to 3 candidates in the table and click Compare).
+
+See `src/components/dashboard/CandidateCompare.tsx`, `src/lib/email.ts`, and changes in `src/components/dashboard/CandidateTable.tsx` and `src/components/dashboard/CandidateModal.tsx`.

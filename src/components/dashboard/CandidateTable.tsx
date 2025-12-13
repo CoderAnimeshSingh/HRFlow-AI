@@ -20,6 +20,7 @@ interface CandidateTableProps {
   onViewCandidate: (candidate: Candidate) => void;
   onStatusChange: (candidateId: string, status: string) => void;
   onRefresh: () => void;
+  onCompare?: (candidates: Candidate[]) => void;
 }
 
 const statusColors: Record<string, string> = {
@@ -47,9 +48,11 @@ export const CandidateTable = ({
   onViewCandidate, 
   onStatusChange,
   onRefresh 
+  , onCompare
 }: CandidateTableProps) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
   const filteredCandidates = candidates.filter(candidate => {
     const matchesSearch = 
@@ -61,6 +64,12 @@ export const CandidateTable = ({
     
     return matchesSearch && matchesStatus;
   });
+
+  const selectedCandidates = candidates.filter(c => selectedIds.includes(c.id));
+
+  const toggleSelect = (id: string) => {
+    setSelectedIds(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id].slice(-3));
+  };
 
   const getScoreColor = (score: number | null) => {
     if (!score) return "text-muted-foreground";
@@ -113,6 +122,7 @@ export const CandidateTable = ({
         <Table>
           <TableHeader>
             <TableRow>
+              <TableHead className="w-8"> </TableHead>
               <TableHead>Candidate</TableHead>
               <TableHead>Position</TableHead>
               <TableHead className="text-center">AI Score</TableHead>
@@ -124,13 +134,22 @@ export const CandidateTable = ({
           <TableBody>
             {filteredCandidates.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
+                <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
                   No candidates found
                 </TableCell>
               </TableRow>
             ) : (
               filteredCandidates.map((candidate) => (
                 <TableRow key={candidate.id} className="hover:bg-muted/50">
+                  <TableCell>
+                    <input
+                      type="checkbox"
+                      className="w-4 h-4"
+                      checked={selectedIds.includes(candidate.id)}
+                      onChange={() => toggleSelect(candidate.id)}
+                      aria-label={`select-${candidate.id}`}
+                    />
+                  </TableCell>
                   <TableCell>
                     <div>
                       <p className="font-medium text-foreground">{candidate.name}</p>
@@ -189,6 +208,21 @@ export const CandidateTable = ({
             )}
           </TableBody>
         </Table>
+      </div>
+
+      <div className="p-4 border-t border-border flex flex-wrap items-center gap-2 justify-between">
+        <div className="text-sm text-muted-foreground">Selected: {selectedIds.length}</div>
+        <div className="flex gap-2">
+          <Button variant="ghost" size="sm" onClick={() => { setSelectedIds([]); }}>
+            Clear
+          </Button>
+          <Button
+            onClick={() => onCompare && onCompare(selectedCandidates)}
+            disabled={selectedCandidates.length < 2}
+          >
+            Compare ({selectedCandidates.length})
+          </Button>
+        </div>
       </div>
     </div>
   );
