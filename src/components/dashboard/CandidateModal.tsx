@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Candidate } from "@/pages/Dashboard";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -10,7 +10,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { sendInterviewEmail } from "@/lib/email";
 import { 
   User, 
   Mail, 
@@ -22,7 +21,8 @@ import {
   Brain,
   Save,
   Loader2,
-  RefreshCw
+  RefreshCw,
+  ExternalLink
 } from "lucide-react";
 import { format } from "date-fns";
 
@@ -51,14 +51,24 @@ export const CandidateModal = ({
   onStatusChange,
   onRefresh 
 }: CandidateModalProps) => {
-  const [notes, setNotes] = useState(candidate?.notes || "");
-  const [interviewDate, setInterviewDate] = useState(candidate?.interview_date_time || "");
-  const [testLink, setTestLink] = useState(candidate?.test_link || "");
-  const [testScore, setTestScore] = useState<string>(candidate?.test_score?.toString() || "");
+  const [notes, setNotes] = useState("");
+  const [interviewDate, setInterviewDate] = useState("");
+  const [testLink, setTestLink] = useState("");
+  const [testScore, setTestScore] = useState<string>("");
   const [saving, setSaving] = useState(false);
   const [reanalyzing, setReanalyzing] = useState(false);
   const [sendingEmail, setSendingEmail] = useState(false);
   const { toast } = useToast();
+
+  // Update local state when candidate changes
+  useEffect(() => {
+    if (candidate) {
+      setNotes(candidate.notes || "");
+      setInterviewDate(candidate.interview_date_time || "");
+      setTestLink(candidate.test_link || "");
+      setTestScore(candidate.test_score?.toString() || "");
+    }
+  }, [candidate]);
 
   if (!candidate) return null;
 
@@ -142,6 +152,43 @@ export const CandidateModal = ({
     } finally {
       setReanalyzing(false);
     }
+  };
+
+  const handleSendInvite = async () => {
+    setSendingEmail(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('send-invite', {
+        body: {
+          candidateName: candidate.name,
+          candidateEmail: candidate.email,
+          interviewDate,
+          notes,
+          companyName: 'HRFlow AI',
+        },
+      });
+
+      if (error) throw error;
+      if (data && 'error' in data && data.error) throw new Error(String(data.error));
+
+      toast({ 
+        title: 'Email Sent', 
+        description: 'Interview invite sent to candidate.' 
+      });
+    } catch (err) {
+      console.error(err);
+      toast({ 
+        title: "Email Failed", 
+        description: "Failed to send email. Check edge function logs.", 
+        variant: "destructive" 
+      });
+    } finally {
+      setSendingEmail(false);
+    }
+  };
+
+  const handleScheduleCalendly = () => {
+    const calendlyUrl = `https://calendly.com/schedule?name=${encodeURIComponent(candidate.name)}&email=${encodeURIComponent(candidate.email)}`;
+    window.open(calendlyUrl, "_blank");
   };
 
   const getScoreColor = (score: number | null) => {
@@ -337,61 +384,18 @@ export const CandidateModal = ({
 
               <div className="grid gap-2 sm:grid-cols-2">
                 <Button onClick={handleSave} disabled={saving} className="w-full">
-                {saving ? (
-                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                ) : (
-                  <Save className="h-4 w-4 mr-2" />
-                )}
-                Save Changes
-
+                  {saving ? (
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  ) : (
+                    <Save className="h-4 w-4 mr-2" />
+                  )}
+                  Save Changes
                 </Button>
 
                 <Button
-                  onClick={async () => {
-                    if (!candidate) return;
-                    setSendingEmail(true);
-                    try {
-                      const useServer = import.meta.env.VITE_USE_SERVER_EMAIL === 'true';
-                      if (useServer) {
-                        // Call Supabase Edge Function `send-invite`
-                        const { data, error } = await supabase.functions.invoke('send-invite', {
-                          body: {
-                            candidateName: candidate.name,
-                            candidateEmail: candidate.email,
-                            interviewDate,
-                            notes,
-                            companyName: import.meta.env.VITE_COMPANY_NAME || '',
-                          },
-                        });
-
-                        if (error) throw error;
-                        if (data && 'error' in data && data.error) throw new Error(String(data.error));
-
-                        toast({ title: 'Email Sent', description: 'Interview invite sent via server.' });
-                      } else {
-                        const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID as string;
-                        const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID as string;
-                        const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY as string;
-
-                        const templateParams = {
-                          to_name: candidate.name,
-                          to_email: candidate.email,
-                          interview_datetime: interviewDate || "",
-                          company_name: import.meta.env.VITE_COMPANY_NAME || "",
-                          notes,
-                        };
-
-                        await sendInterviewEmail({ serviceId, templateId, publicKey, templateParams });
-                        toast({ title: 'Email Sent', description: 'Interview invite sent to candidate.' });
-                      }
-                    } catch (err) {
-                      console.error(err);
-                      toast({ title: "Email Failed", description: "Failed to send email.", variant: "destructive" });
-                    } finally {
-                      setSendingEmail(false);
-                    }
-                  }}
+                  onClick={handleSendInvite}
                   disabled={sendingEmail}
+                  variant="secondary"
                 >
                   {sendingEmail ? (
                     <Loader2 className="h-4 w-4 mr-2 animate-spin" />
@@ -402,22 +406,14 @@ export const CandidateModal = ({
                 </Button>
               </div>
 
-              <div className="mt-2 flex gap-2">
-                <Button
-                  variant="outline"
-                  onClick={() => {
-                    // Open Calendly scheduling page; user should configure VITE_CALENDLY_BASE_URL in .env
-                    const base = import.meta.env.VITE_CALENDLY_BASE_URL as string;
-                    const url = base
-                      ? `${base}?name=${encodeURIComponent(candidate.name)}&email=${encodeURIComponent(candidate.email)}`
-                      : `https://calendly.com/your-calendly-event?name=${encodeURIComponent(candidate.name)}&email=${encodeURIComponent(candidate.email)}`;
-                    window.open(url, "_blank");
-                  }}
-                >
-                  <Calendar className="h-4 w-4 mr-2" />
-                  Schedule (Calendly)
-                </Button>
-              </div>
+              <Button
+                variant="outline"
+                onClick={handleScheduleCalendly}
+                className="w-full"
+              >
+                <ExternalLink className="h-4 w-4 mr-2" />
+                Schedule Interview (Calendly)
+              </Button>
             </TabsContent>
           </Tabs>
         </div>
