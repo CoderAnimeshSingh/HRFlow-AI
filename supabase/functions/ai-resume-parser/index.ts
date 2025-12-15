@@ -44,7 +44,7 @@ Provide a comprehensive analysis in the following JSON format:
 Return ONLY valid JSON, no additional text.`;
 
     // Use Lovable AI Gateway
-    const response = await fetch("https://ai-gateway.lovable.dev/v1/chat/completions", {
+    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: {
         "Authorization": `Bearer ${LOVABLE_API_KEY}`,
