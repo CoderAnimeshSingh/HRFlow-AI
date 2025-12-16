@@ -14,6 +14,74 @@ export type Database = {
   }
   public: {
     Tables: {
+      activity_log: {
+        Row: {
+          action: string
+          created_at: string
+          details: Json | null
+          entity_id: string | null
+          entity_type: string
+          id: string
+          user_id: string | null
+          user_name: string | null
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          details?: Json | null
+          entity_id?: string | null
+          entity_type: string
+          id?: string
+          user_id?: string | null
+          user_name?: string | null
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          details?: Json | null
+          entity_id?: string | null
+          entity_type?: string
+          id?: string
+          user_id?: string | null
+          user_name?: string | null
+        }
+        Relationships: []
+      }
+      candidate_comments: {
+        Row: {
+          candidate_id: string
+          content: string
+          created_at: string
+          id: string
+          user_id: string
+          user_name: string
+        }
+        Insert: {
+          candidate_id: string
+          content: string
+          created_at?: string
+          id?: string
+          user_id: string
+          user_name: string
+        }
+        Update: {
+          candidate_id?: string
+          content?: string
+          created_at?: string
+          id?: string
+          user_id?: string
+          user_name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "candidate_comments_candidate_id_fkey"
+            columns: ["candidate_id"]
+            isOneToOne: false
+            referencedRelation: "candidates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       candidates: {
         Row: {
           ai_fit_score: number | null
@@ -77,6 +145,51 @@ export type Database = {
         }
         Relationships: []
       }
+      hiring_metrics: {
+        Row: {
+          avg_ai_score: number | null
+          avg_time_to_hire_days: number | null
+          created_at: string
+          hired: number | null
+          id: string
+          interviewed: number | null
+          metric_date: string
+          new_candidates: number | null
+          offers_made: number | null
+          rejected: number | null
+          screened: number | null
+          total_applications: number | null
+        }
+        Insert: {
+          avg_ai_score?: number | null
+          avg_time_to_hire_days?: number | null
+          created_at?: string
+          hired?: number | null
+          id?: string
+          interviewed?: number | null
+          metric_date?: string
+          new_candidates?: number | null
+          offers_made?: number | null
+          rejected?: number | null
+          screened?: number | null
+          total_applications?: number | null
+        }
+        Update: {
+          avg_ai_score?: number | null
+          avg_time_to_hire_days?: number | null
+          created_at?: string
+          hired?: number | null
+          id?: string
+          interviewed?: number | null
+          metric_date?: string
+          new_candidates?: number | null
+          offers_made?: number | null
+          rejected?: number | null
+          screened?: number | null
+          total_applications?: number | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -102,6 +215,42 @@ export type Database = {
           email?: string | null
           full_name?: string | null
           id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      team_members: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          department: string | null
+          id: string
+          is_active: boolean | null
+          position: string | null
+          role: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          department?: string | null
+          id?: string
+          is_active?: boolean | null
+          position?: string | null
+          role?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          department?: string | null
+          id?: string
+          is_active?: boolean | null
+          position?: string | null
+          role?: string
           updated_at?: string
           user_id?: string
         }

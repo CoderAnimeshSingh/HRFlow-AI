@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { User } from "@supabase/supabase-js";
@@ -8,7 +8,13 @@ import { DashboardStats } from "@/components/dashboard/DashboardStats";
 import { CandidateTable } from "@/components/dashboard/CandidateTable";
 import { CandidateModal } from "@/components/dashboard/CandidateModal";
 import CandidateCompare from "@/components/dashboard/CandidateCompare";
-import { Loader2 } from "lucide-react";
+import { HiringAnalytics } from "@/components/dashboard/HiringAnalytics";
+import { TeamCollaboration, logActivity } from "@/components/dashboard/TeamCollaboration";
+import { BulkActions } from "@/components/dashboard/BulkActions";
+import { AdvancedSearch, SearchFilters } from "@/components/dashboard/AdvancedSearch";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Loader2, LayoutDashboard, BarChart3, Users, Activity } from "lucide-react";
+import { subDays, isWithinInterval, startOfDay, startOfWeek, startOfMonth, startOfQuarter } from "date-fns";
 
 export interface Candidate {
   id: string;
@@ -31,6 +37,18 @@ export interface Candidate {
   updated_at: string;
 }
 
+const defaultFilters: SearchFilters = {
+  query: "",
+  minScore: 0,
+  maxScore: 100,
+  status: "all",
+  jobRole: "all",
+  experienceMin: 0,
+  experienceMax: 20,
+  skills: [],
+  dateRange: "all",
+};
+
 const Dashboard = () => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
@@ -39,6 +57,9 @@ const Dashboard = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCompareOpen, setIsCompareOpen] = useState(false);
   const [compareCandidates, setCompareCandidates] = useState<Candidate[]>([]);
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [filters, setFilters] = useState<SearchFilters>(defaultFilters);
+  const [activeTab, setActiveTab] = useState("pipeline");
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -104,14 +125,98 @@ const Dashboard = () => {
     }
   }, [user, fetchCandidates]);
 
+  // Filter candidates based on search criteria
+  const filteredCandidates = useMemo(() => {
+    return candidates.filter(c => {
+      // Text search
+      if (filters.query) {
+        const query = filters.query.toLowerCase();
+        const matchesQuery = 
+          c.name.toLowerCase().includes(query) ||
+          c.email.toLowerCase().includes(query) ||
+          c.job_role_applied.toLowerCase().includes(query) ||
+          (c.skills || []).some(s => s.toLowerCase().includes(query));
+        if (!matchesQuery) return false;
+      }
+
+      // AI Score
+      const score = c.ai_fit_score || 0;
+      if (score < filters.minScore || score > filters.maxScore) return false;
+
+      // Status
+      if (filters.status !== "all" && c.status !== filters.status) return false;
+
+      // Job Role
+      if (filters.jobRole !== "all" && c.job_role_applied !== filters.jobRole) return false;
+
+      // Experience
+      const exp = c.experience_years || 0;
+      if (exp < filters.experienceMin || exp > filters.experienceMax) return false;
+
+      // Skills
+      if (filters.skills.length > 0) {
+        const candidateSkills = (c.skills || []).map(s => s.toLowerCase());
+        const hasAllSkills = filters.skills.every(s => 
+          candidateSkills.some(cs => cs.includes(s.toLowerCase()))
+        );
+        if (!hasAllSkills) return false;
+      }
+
+      // Date Range
+      if (filters.dateRange !== "all") {
+        const created = new Date(c.created_at);
+        const now = new Date();
+        let start: Date;
+        
+        switch (filters.dateRange) {
+          case "today":
+            start = startOfDay(now);
+            break;
+          case "week":
+            start = startOfWeek(now);
+            break;
+          case "month":
+            start = startOfMonth(now);
+            break;
+          case "quarter":
+            start = startOfQuarter(now);
+            break;
+          default:
+            start = new Date(0);
+        }
+        
+        if (!isWithinInterval(created, { start, end: now })) return false;
+      }
+
+      return true;
+    });
+  }, [candidates, filters]);
+
+  // Get unique job roles and skills for filters
+  const jobRoles = useMemo(() => 
+    [...new Set(candidates.map(c => c.job_role_applied))].sort(),
+    [candidates]
+  );
+
+  const availableSkills = useMemo(() => 
+    [...new Set(candidates.flatMap(c => c.skills || []))].sort(),
+    [candidates]
+  );
+
+  const selectedCandidates = useMemo(() => 
+    candidates.filter(c => selectedIds.includes(c.id)),
+    [candidates, selectedIds]
+  );
+
   const handleLogout = async () => {
     await supabase.auth.signOut();
     navigate("/");
   };
 
-  const handleViewCandidate = (candidate: Candidate) => {
+  const handleViewCandidate = async (candidate: Candidate) => {
     setSelectedCandidate(candidate);
     setIsModalOpen(true);
+    await logActivity('viewed', 'candidate', candidate.id, { candidate_name: candidate.name });
   };
 
   const handleStatusChange = async (candidateId: string, newStatus: string) => {
@@ -128,6 +233,12 @@ const Dashboard = () => {
       });
       return;
     }
+
+    const candidate = candidates.find(c => c.id === candidateId);
+    await logActivity('updated_status', 'candidate', candidateId, { 
+      candidate_name: candidate?.name,
+      new_status: newStatus 
+    });
 
     toast({
       title: "Status Updated",
@@ -147,20 +258,76 @@ const Dashboard = () => {
     <div className="min-h-screen bg-background">
       <DashboardHeader user={user} onLogout={handleLogout} />
       
-      <main className="container mx-auto px-4 py-8">
+      <main className="container mx-auto px-4 py-6 sm:py-8">
         <DashboardStats candidates={candidates} />
         
-        <div className="mt-8">
-          <CandidateTable 
-            candidates={candidates} 
-            onViewCandidate={handleViewCandidate}
-            onStatusChange={handleStatusChange}
-            onRefresh={fetchCandidates}
-            onCompare={(list) => {
-              setCompareCandidates(list);
-              setIsCompareOpen(true);
-            }}
-          />
+        <div className="mt-6 sm:mt-8">
+          <Tabs value={activeTab} onValueChange={setActiveTab}>
+            <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 mb-6">
+              <TabsTrigger value="pipeline" className="gap-2">
+                <LayoutDashboard className="h-4 w-4 hidden sm:block" />
+                Pipeline
+              </TabsTrigger>
+              <TabsTrigger value="analytics" className="gap-2">
+                <BarChart3 className="h-4 w-4 hidden sm:block" />
+                Analytics
+              </TabsTrigger>
+              <TabsTrigger value="team" className="gap-2">
+                <Users className="h-4 w-4 hidden sm:block" />
+                Team
+              </TabsTrigger>
+              <TabsTrigger value="activity" className="gap-2">
+                <Activity className="h-4 w-4 hidden sm:block" />
+                Activity
+              </TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="pipeline" className="space-y-4">
+              {/* Advanced Search */}
+              <AdvancedSearch
+                filters={filters}
+                onFiltersChange={setFilters}
+                jobRoles={jobRoles}
+                availableSkills={availableSkills}
+              />
+
+              {/* Bulk Actions */}
+              {selectedIds.length > 0 && (
+                <BulkActions
+                  selectedCandidates={selectedCandidates}
+                  onActionComplete={fetchCandidates}
+                  onClearSelection={() => setSelectedIds([])}
+                />
+              )}
+
+              {/* Candidate Table */}
+              <CandidateTable 
+                candidates={filteredCandidates} 
+                onViewCandidate={handleViewCandidate}
+                onStatusChange={handleStatusChange}
+                onRefresh={fetchCandidates}
+                onCompare={(list) => {
+                  setCompareCandidates(list);
+                  setIsCompareOpen(true);
+                }}
+              />
+            </TabsContent>
+
+            <TabsContent value="analytics">
+              <HiringAnalytics candidates={candidates} />
+            </TabsContent>
+
+            <TabsContent value="team">
+              <TeamCollaboration 
+                candidateId={selectedCandidate?.id}
+                candidateName={selectedCandidate?.name}
+              />
+            </TabsContent>
+
+            <TabsContent value="activity">
+              <TeamCollaboration />
+            </TabsContent>
+          </Tabs>
         </div>
       </main>
 
