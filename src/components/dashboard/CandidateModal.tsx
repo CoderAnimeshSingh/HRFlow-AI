@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { logActivity } from "./TeamCollaboration";
 import { 
   User, 
   Mail, 
@@ -22,7 +23,8 @@ import {
   Save,
   Loader2,
   RefreshCw,
-  ExternalLink
+  ExternalLink,
+  Download
 } from "lucide-react";
 import { format } from "date-fns";
 

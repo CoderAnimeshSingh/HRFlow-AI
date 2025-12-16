@@ -5,7 +5,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
+import { ResumeUpload } from "@/components/dashboard/ResumeUpload";
 import { motion } from "framer-motion";
 import { User, Mail, Phone, Briefcase, FileText, Upload, CheckCircle2, Loader2, ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -35,13 +37,23 @@ const Apply = () => {
     phone: "",
     jobRole: "",
     resumeText: "",
+    resumeUrl: "",
   });
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [uploadMethod, setUploadMethod] = useState<"paste" | "upload">("upload");
   const { toast } = useToast();
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleResumeUpload = (url: string, extractedText: string) => {
+    setFormData(prev => ({ 
+      ...prev, 
+      resumeUrl: url,
+      resumeText: prev.resumeText || extractedText 
+    }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -68,6 +80,7 @@ const Apply = () => {
           phone: formData.phone || null,
           job_role_applied: formData.jobRole,
           resume_text: formData.resumeText || null,
+          resume_url: formData.resumeUrl || null,
           status: 'new',
         })
         .select()
@@ -161,16 +174,16 @@ const Apply = () => {
         <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl" />
       </div>
 
-      <div className="relative z-10 container mx-auto px-4 py-12">
+      <div className="relative z-10 container mx-auto px-4 py-8 sm:py-12">
         {/* Header */}
-        <div className="text-center mb-12">
+        <div className="text-center mb-8 sm:mb-12">
           <Link to="/" className="inline-block mb-6">
             <h1 className="font-display text-2xl font-bold">
               <span className="text-gradient">HRFlow</span>
               <span className="text-foreground"> AI</span>
             </h1>
           </Link>
-          <h2 className="font-display text-4xl font-bold text-foreground mb-4">
+          <h2 className="font-display text-3xl sm:text-4xl font-bold text-foreground mb-4">
             Join Our Team
           </h2>
           <p className="text-muted-foreground max-w-lg mx-auto">
@@ -184,7 +197,7 @@ const Apply = () => {
           animate={{ opacity: 1, y: 0 }}
           className="max-w-2xl mx-auto"
         >
-          <div className="bg-card rounded-2xl shadow-lg border border-border p-8">
+          <div className="bg-card rounded-2xl shadow-lg border border-border p-6 sm:p-8">
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Personal Information */}
               <div className="space-y-4">
@@ -276,22 +289,41 @@ const Apply = () => {
                   Resume / CV
                 </h3>
                 
-                <div className="space-y-2">
-                  <Label htmlFor="resumeText">
-                    Paste Your Resume Content
-                    <span className="text-muted-foreground text-sm ml-2">(Our AI will analyze it)</span>
-                  </Label>
-                  <Textarea
-                    id="resumeText"
-                    placeholder="Paste your resume content here... Include your work experience, education, skills, and any relevant achievements."
-                    value={formData.resumeText}
-                    onChange={(e) => handleInputChange("resumeText", e.target.value)}
-                    className="min-h-[200px] resize-y"
-                  />
-                  <p className="text-xs text-muted-foreground">
-                    For best results, include your work experience, skills, education, and notable achievements.
-                  </p>
-                </div>
+                <Tabs value={uploadMethod} onValueChange={(v) => setUploadMethod(v as "paste" | "upload")}>
+                  <TabsList className="grid w-full grid-cols-2">
+                    <TabsTrigger value="upload">Upload File</TabsTrigger>
+                    <TabsTrigger value="paste">Paste Text</TabsTrigger>
+                  </TabsList>
+                  
+                  <TabsContent value="upload" className="mt-4">
+                    <ResumeUpload onUploadComplete={handleResumeUpload} />
+                    {formData.resumeUrl && (
+                      <p className="text-sm text-emerald-600 mt-2 flex items-center gap-1">
+                        <CheckCircle2 className="h-4 w-4" />
+                        Resume uploaded successfully
+                      </p>
+                    )}
+                  </TabsContent>
+                  
+                  <TabsContent value="paste" className="mt-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="resumeText">
+                        Paste Your Resume Content
+                        <span className="text-muted-foreground text-sm ml-2">(Our AI will analyze it)</span>
+                      </Label>
+                      <Textarea
+                        id="resumeText"
+                        placeholder="Paste your resume content here... Include your work experience, education, skills, and any relevant achievements."
+                        value={formData.resumeText}
+                        onChange={(e) => handleInputChange("resumeText", e.target.value)}
+                        className="min-h-[200px] resize-y"
+                      />
+                      <p className="text-xs text-muted-foreground">
+                        For best results, include your work experience, skills, education, and notable achievements.
+                      </p>
+                    </div>
+                  </TabsContent>
+                </Tabs>
               </div>
 
               {/* Submit Button */}
